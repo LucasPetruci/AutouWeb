@@ -4,11 +4,14 @@ import { AppHeader } from "@/src/components/AppHeader";
 import { EmailClassifier } from "@/src/components/EmailClassifier";
 import React from "react";
 
+const DARK_BLUE = "#001020";
+const GOLD_ORANGE = "#E0A030";
+
 export default function Home(): React.ReactElement {
   return (
     <main style={{
       minHeight: "100vh",
-      background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
+      background: DARK_BLUE,
       position: "relative",
       overflow: "hidden",
     }}>
@@ -19,9 +22,9 @@ export default function Home(): React.ReactElement {
         right: 0,
         bottom: 0,
         background: `
-          radial-gradient(circle at 20% 50%, rgba(24, 144, 255, 0.08) 0%, transparent 50%),
-          radial-gradient(circle at 80% 80%, rgba(82, 196, 26, 0.08) 0%, transparent 50%),
-          radial-gradient(circle at 40% 20%, rgba(250, 173, 20, 0.06) 0%, transparent 50%)
+          radial-gradient(circle at 20% 50%, rgba(224, 160, 48, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(224, 160, 48, 0.08) 0%, transparent 50%),
+          radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%)
         `,
         pointerEvents: "none",
       }} />

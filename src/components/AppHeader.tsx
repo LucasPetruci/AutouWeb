@@ -1,15 +1,24 @@
 "use client";
 
-import { Layout, Button, Dropdown, Space, Typography, theme } from 'antd';
+import { Layout, Button, Dropdown, Space, Typography } from 'antd';
 import { MailOutlined, GlobalOutlined, DownOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useTranslation } from '../i18n/LanguageContext';
+import { Language } from '../types/Email';
 
 const { Header } = Layout;
 const { Text } = Typography;
 
+const DARK_BLUE = "#001020";
+const GOLD_ORANGE = "#E0A030";
+
+const languageLabels = {
+  pt: "Português",
+  en: "English",
+  es: "Español",
+} as const;
+
 export function AppHeader() {
-  const { token } = theme.useToken();
   const { language, setLanguage, translations } = useTranslation();
 
   const items: MenuProps['items'] = [
@@ -18,14 +27,8 @@ export function AppHeader() {
     { key: 'es', label: 'Español' },
   ];
 
-  const languageLabels: Record<string, string> = {
-    pt: "Português",
-    en: "English",
-    es: "Español",
-  };
-
   const handleMenuClick: MenuProps['onClick'] = (info: Parameters<NonNullable<MenuProps['onClick']>>[0]) => {
-    setLanguage(info.key as typeof language);
+    setLanguage(info.key as Language);
   };
 
   return (
@@ -33,26 +36,26 @@ export function AppHeader() {
       display: 'flex', 
       justifyContent: 'space-between', 
       alignItems: 'center', 
-      background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.98) 100%)',
+      background: `linear-gradient(135deg, ${DARK_BLUE} 0%, #001830 100%)`,
       backdropFilter: 'blur(20px)',
       padding: '0 48px',
       position: 'sticky',
       top: 0,
       zIndex: 1000,
       height: '80px',
-      boxShadow: '0 4px 24px rgba(0, 0, 0, 0.06)',
-      borderBottom: `1px solid ${token.colorBorderSecondary}`,
+      boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
+      borderBottom: `1px solid rgba(224, 160, 48, 0.2)`,
     }}>
       <Space size={16}>
         <div style={{ 
-          background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimary}dd)`,
+          background: GOLD_ORANGE,
           width: 48, 
           height: 48, 
           borderRadius: 12,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: `0 8px 24px ${token.colorPrimary}30`,
+          boxShadow: `0 8px 24px ${GOLD_ORANGE}40`,
           position: 'relative',
           overflow: 'hidden',
         }}>
@@ -65,22 +68,19 @@ export function AppHeader() {
             background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
             animation: 'pulse 3s ease-in-out infinite',
           }} />
-          <MailOutlined style={{ color: 'white', fontSize: 22, position: 'relative', zIndex: 1 }} />
+          <MailOutlined style={{ color: DARK_BLUE, fontSize: 22, position: 'relative', zIndex: 1, fontWeight: 'bold' }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2 }}>
           <Text strong style={{ 
             fontSize: 20, 
             letterSpacing: '-0.02em',
-            background: `linear-gradient(135deg, ${token.colorPrimary}, ${token.colorPrimary}dd)`,
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
+            color: GOLD_ORANGE,
           }}>
             {translations.header.title}
           </Text>
           <Space size={4} style={{ marginTop: 2 }}>
-            <ThunderboltOutlined style={{ fontSize: 10, color: token.colorPrimary }} />
-            <Text type="secondary" style={{ fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em' }}>
+            <ThunderboltOutlined style={{ fontSize: 10, color: GOLD_ORANGE }} />
+            <Text style={{ fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.7)' }}>
               {translations.header.subtitle}
             </Text>
           </Space>
@@ -88,11 +88,7 @@ export function AppHeader() {
       </Space>
 
       <Dropdown 
-        menu={{ 
-          items, 
-          onClick: handleMenuClick, 
-          selectedKeys: [language] 
-        }} 
+        menu={{ items, onClick: handleMenuClick, selectedKeys: [language] }} 
         trigger={['click']}
       >
         <Button 
@@ -103,28 +99,22 @@ export function AppHeader() {
             height: 44,
             borderRadius: 10,
             padding: '0 16px',
-            background: token.colorFillTertiary,
-            border: `1px solid ${token.colorBorderSecondary}`,
+            background: 'rgba(224, 160, 48, 0.1)',
+            border: `1px solid rgba(224, 160, 48, 0.3)`,
           }}
         >
           <Space size={10}>
-            <GlobalOutlined style={{ color: token.colorPrimary, fontSize: 16 }} />
-            <Text style={{ fontWeight: 500, fontSize: 14 }}>{languageLabels[language]}</Text>
-            <DownOutlined style={{ fontSize: 10, color: token.colorTextDescription }} />
+            <GlobalOutlined style={{ color: GOLD_ORANGE, fontSize: 16 }} />
+            <Text style={{ fontWeight: 500, fontSize: 14, color: 'white' }}>{languageLabels[language]}</Text>
+            <DownOutlined style={{ fontSize: 10, color: 'rgba(255, 255, 255, 0.6)' }} />
           </Space>
         </Button>
       </Dropdown>
 
       <style jsx global>{`
         @keyframes pulse {
-          0%, 100% {
-            opacity: 0.5;
-            transform: scale(1);
-          }
-          50% {
-            opacity: 0.8;
-            transform: scale(1.1);
-          }
+          0%, 100% { opacity: 0.5; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.1); }
         }
       `}</style>
     </Header>
