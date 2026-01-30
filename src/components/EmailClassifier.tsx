@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { 
-  Card, Input, Button, Segmented, Upload, Typography, 
+  Input, Button, Segmented, Upload, Typography, 
   Space, Tag, Empty, Spin, message
 } from "antd";
 import type { UploadFile, UploadProps } from "antd";
@@ -14,6 +14,7 @@ import {
 import { EmailService } from "../services/Email.service";
 import { EmailModel, EmailCategory } from "../types/Email";
 import { useTranslation } from "../i18n/LanguageContext";
+import { CardWrapper } from "./CardWrapper";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -103,8 +104,7 @@ export function EmailClassifier() {
 
   return (
     <div style={{ display: "flex", gap: 32, flexDirection: "row", flexWrap: "wrap" }}>
-      {/* @ts-expect-error - Ant Design v6 Card type issue */}
-      <Card 
+      <CardWrapper 
         style={{ 
           flex: "1 1 480px", 
           borderRadius: 16, 
@@ -222,10 +222,9 @@ export function EmailClassifier() {
             )}
           </Button>
         </Space>
-      </Card>
+      </CardWrapper>
 
-      {/* @ts-expect-error - Ant Design v6 Card type issue */}
-      <Card 
+      <CardWrapper 
         style={{ 
           flex: "1 1 480px", 
           borderRadius: 16, 
@@ -422,7 +421,7 @@ export function EmailClassifier() {
             />
           </div>
         )}
-      </Card>
+      </CardWrapper>
     </div>
   );
 }
