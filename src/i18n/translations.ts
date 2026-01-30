@@ -1,0 +1,115 @@
+export const translations = {
+  pt: {
+    header: {
+      title: "AutoU",
+      subtitle: "Email Classifier",
+    },
+    classifier: {
+      input: {
+        title: "ENTRADA",
+        clear: "Limpar",
+        textTab: "Texto",
+        fileTab: "Arquivo",
+        placeholder: "Cole o conteúdo do e-mail aqui...",
+        dragText: "Arraste um arquivo ou clique para selecionar",
+        dragHint: "Arquivos .txt suportados",
+        classifyButton: "Classificar E-mail",
+        analyzing: "Analisando com IA...",
+      },
+      result: {
+        title: "RESULTADO",
+        loading: "Processando com inteligência artificial...",
+        loadingSubtext: "Isso pode levar alguns segundos",
+        productive: "PRODUTIVO",
+        unproductive: "IMPRODUTIVO",
+        confidence: "de confiança",
+        contextualAnalysis: "Análise Contextual",
+        suggestedResponse: "Resposta Sugerida",
+        copy: "Copiar",
+        copied: "Copiado!",
+        waiting: "Aguardando análise",
+        waitingSubtext: "O resultado da análise aparecerá aqui após o envio",
+      },
+      messages: {
+        copied: "Copiado para a área de transferência!",
+        error: "Erro ao classificar e-mail",
+      },
+    },
+  },
+  en: {
+    header: {
+      title: "AutoU",
+      subtitle: "Email Classifier",
+    },
+    classifier: {
+      input: {
+        title: "INPUT",
+        clear: "Clear",
+        textTab: "Text",
+        fileTab: "File",
+        placeholder: "Paste the email content here...",
+        dragText: "Drag a file or click to select",
+        dragHint: ".txt files supported",
+        classifyButton: "Classify Email",
+        analyzing: "Analyzing with AI...",
+      },
+      result: {
+        title: "RESULT",
+        loading: "Processing with artificial intelligence...",
+        loadingSubtext: "This may take a few seconds",
+        productive: "PRODUCTIVE",
+        unproductive: "UNPRODUCTIVE",
+        confidence: "confidence",
+        contextualAnalysis: "Contextual Analysis",
+        suggestedResponse: "Suggested Response",
+        copy: "Copy",
+        copied: "Copied!",
+        waiting: "Waiting for analysis",
+        waitingSubtext: "The analysis result will appear here after submission",
+      },
+      messages: {
+        copied: "Copied to clipboard!",
+        error: "Error classifying email",
+      },
+    },
+  },
+  es: {
+    header: {
+      title: "AutoU",
+      subtitle: "Clasificador de Correos",
+    },
+    classifier: {
+      input: {
+        title: "ENTRADA",
+        clear: "Limpiar",
+        textTab: "Texto",
+        fileTab: "Archivo",
+        placeholder: "Pega el contenido del correo aquí...",
+        dragText: "Arrastra un archivo o haz clic para seleccionar",
+        dragHint: "Archivos .txt soportados",
+        classifyButton: "Clasificar Correo",
+        analyzing: "Analizando con IA...",
+      },
+      result: {
+        title: "RESULTADO",
+        loading: "Procesando con inteligencia artificial...",
+        loadingSubtext: "Esto puede tardar unos segundos",
+        productive: "PRODUCTIVO",
+        unproductive: "IMPRODUCTIVO",
+        confidence: "de confianza",
+        contextualAnalysis: "Análisis Contextual",
+        suggestedResponse: "Respuesta Sugerida",
+        copy: "Copiar",
+        copied: "¡Copiado!",
+        waiting: "Esperando análisis",
+        waitingSubtext: "El resultado del análisis aparecerá aquí después del envío",
+      },
+      messages: {
+        copied: "¡Copiado al portapapeles!",
+        error: "Error al clasificar correo",
+      },
+    },
+  },
+} as const;
+
+export type TranslationKey = keyof typeof translations.pt;
