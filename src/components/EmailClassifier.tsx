@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { 
   Card, Input, Button, Segmented, Upload, Typography, 
   Space, Tag, Empty, Spin, message, theme 
@@ -12,7 +12,6 @@ import {
 } from "@ant-design/icons";
 import { EmailService } from "../services/Email.service";
 import { EmailModel, EmailCategory } from "../types/Email";
-import { ClassifyResponse } from "../services/contracts/Email.contract";
 import { useTranslation } from "../i18n/LanguageContext";
 
 const { TextArea } = Input;
@@ -23,37 +22,43 @@ type InputMode = "text" | "file";
 
 export function EmailClassifier() {
   const { token } = theme.useToken();
-  const { translations } = useTranslation();
+  const { translations, language } = useTranslation();
   const [inputMode, setInputMode] = useState<InputMode>("text");
-  const [emailContent, setEmailContent] = useState<string>("");
+  const [emailContent, setEmailContent] = useState("");
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [copied, setCopied] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [copied, setCopied] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentEmail, setCurrentEmail] = useState<EmailModel | null>(null);
 
   const handleClassify = async () => {
-    if (!emailContent && fileList.length === 0) {
-      return;
-    }
+    if (!emailContent && fileList.length === 0) return;
 
     setIsLoading(true);
     try {
-      const file = fileList.length > 0 ? fileList[0].originFileObj : undefined;
-      const response: ClassifyResponse = await EmailService.classify({
+      const file = fileList[0]?.originFileObj;
+      const languageMap: Record<string, string> = {
+        pt: "pt-BR",
+        en: "en-US",
+        es: "es-ES",
+      };
+      
+      const response = await EmailService.classify({
         content: emailContent || undefined,
-        file: file,
+        file,
+        language: languageMap[language],
       });
 
-      const emailModel: EmailModel = {
+      const data = 'classification' in response ? response.classification : response;
+      
+      setCurrentEmail({
         id: crypto.randomUUID(),
-        content: emailContent,
-        category: response.category,
-        suggestion: response.suggested_response,
-        confidence: response.confidence,
-        createdAt: new Date(response.analysis_date),
-      };
-
-      setCurrentEmail(emailModel);
+        content: 'content_extracted' in response ? response.content_extracted : emailContent,
+        category: data.category,
+        suggestion: data.suggested_response,
+        reasoning: data.reasoning,
+        confidence: data.confidence,
+        createdAt: new Date(data.processed_at),
+      });
     } catch (error) {
       message.error(error instanceof Error ? error.message : translations.classifier.messages.error);
     } finally {
@@ -62,12 +67,11 @@ export function EmailClassifier() {
   };
 
   const handleCopy = async () => {
-    if (currentEmail?.suggestion) {
-      await navigator.clipboard.writeText(currentEmail.suggestion);
-      setCopied(true);
-      message.success(translations.classifier.messages.copied);
-      setTimeout(() => setCopied(false), 2000);
-    }
+    if (!currentEmail?.suggestion) return;
+    await navigator.clipboard.writeText(currentEmail.suggestion);
+    setCopied(true);
+    message.success(translations.classifier.messages.copied);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   const onClear = () => {
@@ -76,36 +80,23 @@ export function EmailClassifier() {
     setCurrentEmail(null);
   };
 
-  const handleSegmentedChange = (value: string | number) => {
-    setInputMode(value as InputMode);
-  };
-
-  const handleTextAreaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setEmailContent(e.target.value);
-  };
-
   const handleBeforeUpload: UploadProps["beforeUpload"] = (file) => {
-    const uploadFile: UploadFile = {
+    setFileList([{
       uid: file.uid,
       name: file.name,
       status: "done",
       originFileObj: file,
-    } as UploadFile;
-    setFileList([uploadFile]);
+    } as UploadFile]);
     return false;
   };
 
-  const handleRemove: UploadProps["onRemove"] = () => {
-    setFileList([]);
-  };
+  const getCategoryColor = (category: EmailCategory) => 
+    category === "Productive" ? "success" : "warning";
 
-  const getCategoryColor = (category: EmailCategory): "success" | "warning" => {
-    return category === "Productive" ? "success" : "warning";
-  };
-
-  const getCategoryLabel = (category: EmailCategory): string => {
-    return category === "Productive" ? translations.classifier.result.productive : translations.classifier.result.unproductive;
-  };
+  const getCategoryLabel = (category: EmailCategory) => 
+    category === "Productive" 
+      ? translations.classifier.result.productive 
+      : translations.classifier.result.unproductive;
 
   return (
     <div style={{ display: "flex", gap: 24, flexDirection: "row", flexWrap: "wrap" }}>
@@ -125,7 +116,7 @@ export function EmailClassifier() {
           <Segmented
             block
             value={inputMode}
-            onChange={handleSegmentedChange}
+            onChange={(value: string | number) => setInputMode(value as InputMode)}
             options={[
               { label: translations.classifier.input.textTab, value: "text", icon: <FontSizeOutlined /> },
               { label: translations.classifier.input.fileTab, value: "file", icon: <FileTextOutlined /> },
@@ -135,7 +126,7 @@ export function EmailClassifier() {
           {inputMode === "text" ? (
             <TextArea
               value={emailContent}
-              onChange={handleTextAreaChange}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEmailContent(e.target.value)}
               placeholder={translations.classifier.input.placeholder}
               autoSize={{ minRows: 12, maxRows: 12 }}
               style={{ borderRadius: 8, padding: 12, border: "1px solid #f0f0f0" }}
@@ -145,7 +136,7 @@ export function EmailClassifier() {
               maxCount={1}
               fileList={fileList}
               beforeUpload={handleBeforeUpload}
-              onRemove={handleRemove}
+              onRemove={() => setFileList([])}
               style={{ borderRadius: 8, height: 268 }}
             >
               <p className="ant-upload-drag-icon">
@@ -202,7 +193,7 @@ export function EmailClassifier() {
                 {translations.classifier.result.contextualAnalysis}
               </Text>
               <p style={{ marginTop: 8, color: token.colorText, lineHeight: 1.6 }}>
-                {currentEmail.suggestion}
+                {currentEmail.reasoning}
               </p>
             </div>
 
