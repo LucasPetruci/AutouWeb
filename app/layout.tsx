@@ -1,6 +1,8 @@
 import type React from "react"
 import { Montserrat } from "next/font/google"
 import { AntdRegistry } from "@ant-design/nextjs-registry"
+import { LanguageProvider } from "@/src/i18n/LanguageContext"
+import { LanguageWrapper } from "@/src/i18n/LanguageWrapper"
 import "./globals.css"
 
 const montserrat = Montserrat({
@@ -17,7 +19,11 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${montserrat.variable} font-sans antialiased`}>
         <AntdRegistry>
-            {children}
+          <LanguageProvider>
+            <LanguageWrapper>
+              {children}
+            </LanguageWrapper>
+          </LanguageProvider>
         </AntdRegistry>
       </body>
     </html>
