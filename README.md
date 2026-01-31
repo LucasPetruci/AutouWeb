@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Email Classifier
 
-## Getting Started
+Aplicação web para classificação inteligente de emails usando IA. Classifica emails como **Produtivos** ou **Improdutivos** e fornece análises contextuais com sugestões de resposta.
 
-First, run the development server:
+**🔗 Teste a aplicação:** [https://autou-web-d7e6.vercel.app/](https://autou-web-d7e6.vercel.app/)
+
+## Tecnologias
+
+- Next.js 16
+- React 19
+- TypeScript
+- Ant Design 6
+- Tailwind CSS
+
+## Instalação
+
+### Backend (API)
+
+Acesse o repositório da API e siga o passo a passo de instalação:
+
+- [Repositório da API](https://github.com/LucasPetruci/AutouApi)
+
+### Frontend
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de Ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Crie um arquivo `.env` na raiz do projeto:
 
-## Learn More
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8000
+NODE_ENV=development
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Estrutura
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+src/
+├── components/     # Componentes React
+├── services/       # Serviços de API
+├── types/          # Tipos TypeScript
+└── i18n/           # Traduções (pt, en, es)
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Autor
 
-## Deploy on Vercel
+### Lucas Petruci
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [LinkedIn](https://www.linkedin.com/in/lucaspetruci/)
+- [GitHub](https://github.com/LucasPetruci)
