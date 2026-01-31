@@ -11,8 +11,8 @@ import {
   CopyOutlined, CheckOutlined, FileTextOutlined, FontSizeOutlined,
   LoadingOutlined
 } from "@ant-design/icons";
-import { EmailService } from "../services/Email.service";
-import { EmailModel, EmailCategory } from "../types/Email";
+import { classifyEmail } from '../services/Email.service';
+import { Email } from '../types/Email';
 import { useTranslation } from "../i18n/LanguageContext";
 import { CardWrapper } from "./CardWrapper";
 
@@ -32,7 +32,7 @@ export function EmailClassifier() {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentEmail, setCurrentEmail] = useState<EmailModel | null>(null);
+  const [currentEmail, setCurrentEmail] = useState<Email.Model | null>(null);
 
   const handleClassify = async () => {
     if (!emailContent && fileList.length === 0) return;
@@ -40,13 +40,13 @@ export function EmailClassifier() {
     setIsLoading(true);
     try {
       const file = fileList[0]?.originFileObj;
-      const languageMap: Record<string, string> = {
+      const languageMap: Record<Email.Language, string> = {
         pt: "pt-BR",
         en: "en-US",
         es: "es-ES",
       };
       
-      const response = await EmailService.classify({
+      const response = await classifyEmail({
         content: emailContent || undefined,
         file,
         language: languageMap[language],
@@ -94,10 +94,10 @@ export function EmailClassifier() {
     return false;
   };
 
-  const getCategoryColor = (category: EmailCategory) => 
+  const getCategoryColor = (category: Email.Category) => 
     category === "Productive" ? "success" : "warning";
 
-  const getCategoryLabel = (category: EmailCategory) => 
+  const getCategoryLabel = (category: Email.Category) => 
     category === "Productive" 
       ? translations.classifier.result.productive 
       : translations.classifier.result.unproductive;

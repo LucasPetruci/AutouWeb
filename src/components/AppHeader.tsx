@@ -4,7 +4,7 @@ import { Layout, Button, Dropdown, Space, Typography } from 'antd';
 import { MailOutlined, GlobalOutlined, DownOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useTranslation } from '../i18n/LanguageContext';
-import { Language } from '../types/Email';
+import { Email } from '../types/Email';
 
 const { Header } = Layout;
 const { Text } = Typography;
@@ -28,7 +28,7 @@ export function AppHeader() {
   ];
 
   const handleMenuClick: MenuProps['onClick'] = (info: Parameters<NonNullable<MenuProps['onClick']>>[0]) => {
-    setLanguage(info.key as Language);
+    setLanguage(info.key as Email.Language);
   };
 
   return (
