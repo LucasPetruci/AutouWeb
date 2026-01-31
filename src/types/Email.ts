@@ -1,19 +1,23 @@
-export type Language = "pt" | "en" | "es";
+export namespace Email {
+    export type Language = "pt" | "en" | "es";
 
-export type EmailCategory = 'Productive' | 'Unproductive';
+    export type Category = 'Productive' | 'Unproductive';
 
-export interface EmailModel {
-  id: string;
-  content: string;
-  category: EmailCategory;
-  suggestion: string;
-  reasoning: string;
-  confidence: number;
-  createdAt: Date;
-}
+    export type Model = {
+        id: string;
+        content: string;
+        category: Category;
+        suggestion: string;
+        reasoning: string;
+        confidence: number;
+        createdAt: Date;
+    };
 
-export interface EmailState {
-  currentEmail: EmailModel | null;
-  isLoading: boolean;
-  error: string | null;
+    export namespace State {
+        export type Model = {
+            currentEmail: Email.Model | null;
+            isLoading: boolean;
+            error: string | null;
+        };
+    }
 }

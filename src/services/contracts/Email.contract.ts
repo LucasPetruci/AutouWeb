@@ -1,32 +1,38 @@
-import { EmailCategory } from "@/src/types/Email";
+import { Email } from "@/src/types/Email";
 
-export interface ClassifyRequest {
-  content?: string;
-  file?: File;
-  language?: string;
+export namespace ClassifyEmail {
+    export type Body = {
+        content?: string;
+        file?: File;
+        language?: string;
+    };
+
+    export namespace File {
+        export type Classification = {
+            category: Email.Category;
+            confidence: number;
+            suggested_response: string;
+            reasoning: string;
+            processed_at: string;
+        };
+
+        export type Response = {
+            filename: string;
+            size: number;
+            content_extracted: string;
+            classification: Classification;
+        };
+    }
+
+    export namespace Text {
+        export type Response = {
+            category: Email.Category;
+            confidence: number;
+            suggested_response: string;
+            reasoning: string;
+            processed_at: string;
+        };
+    }
+
+    export type Response = ClassifyEmail.File.Response | ClassifyEmail.Text.Response;
 }
-
-export interface Classification {
-  category: EmailCategory;
-  confidence: number;
-  suggested_response: string;
-  reasoning: string;
-  processed_at: string;
-}
-
-export interface ClassifyFileResponse {
-  filename: string;
-  size: number;
-  content_extracted: string;
-  classification: Classification;
-}
-
-export interface ClassifyTextResponse {
-  category: EmailCategory;
-  confidence: number;
-  suggested_response: string;
-  reasoning: string;
-  processed_at: string;
-}
-
-export type ClassifyResponse = ClassifyFileResponse | ClassifyTextResponse;
