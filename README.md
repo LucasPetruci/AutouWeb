@@ -2,7 +2,8 @@
 
 Aplicação web para classificação inteligente de emails usando IA. Classifica emails como **Produtivos** ou **Improdutivos** e fornece análises contextuais com sugestões de resposta.
 
-**🔗 Teste a aplicação:** [https://autou-web-d7e6.vercel.app/](https://autou-web-d7e6.vercel.app/)
+**🔗 Teste a aplicação:** [https://autou-web-d7e6.vercel.app/](https://autou-web-d7e6.vercel.app/) <br>
+**Video no Youtube:** [https://www.youtube.com/watch?v=QvN-87UT67U)](https://www.youtube.com/watch?v=QvN-87UT67U)
 
 ## Tecnologias
 
