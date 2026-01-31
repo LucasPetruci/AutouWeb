@@ -3,6 +3,17 @@ export const translations = {
     header: {
       title: "Email Classifier",
     },
+    welcome: {
+      title: "Bem-vindo ao Email Classifier",
+      description: "Uma aplicação inteligente que utiliza Inteligência Artificial para classificar emails automaticamente como Produtivos ou Improdutivos, ajudando você a priorizar sua comunicação profissional.",
+      feature1: "Classificação Automática",
+      feature1Desc: "Analise emails instantaneamente usando IA avançada",
+      feature2: "Análise Contextual",
+      feature2Desc: "Receba explicações detalhadas sobre cada classificação",
+      feature3: "Sugestões de Resposta",
+      feature3Desc: "Obtenha respostas sugeridas baseadas no conteúdo do email",
+      startButton: "Começar",
+    },
     classifier: {
       input: {
         title: "ENTRADA",
@@ -41,6 +52,17 @@ export const translations = {
     header: {
       title: "Email Classifier",
     },
+    welcome: {
+      title: "Welcome to Email Classifier",
+      description: "An intelligent application that uses Artificial Intelligence to automatically classify emails as Productive or Unproductive, helping you prioritize your professional communication.",
+      feature1: "Automatic Classification",
+      feature1Desc: "Analyze emails instantly using advanced AI",
+      feature2: "Contextual Analysis",
+      feature2Desc: "Receive detailed explanations about each classification",
+      feature3: "Response Suggestions",
+      feature3Desc: "Get suggested responses based on email content",
+      startButton: "Get Started",
+    },
     classifier: {
       input: {
         title: "INPUT",
@@ -78,6 +100,17 @@ export const translations = {
   es: {
     header: {
       title: "Clasificador de Correos",
+    },
+    welcome: {
+      title: "Bienvenido al Clasificador de Correos",
+      description: "Una aplicación inteligente que utiliza Inteligencia Artificial para clasificar automáticamente los correos como Productivos o Improductivos, ayudándote a priorizar tu comunicación profesional.",
+      feature1: "Clasificación Automática",
+      feature1Desc: "Analiza correos instantáneamente usando IA avanzada",
+      feature2: "Análisis Contextual",
+      feature2Desc: "Recibe explicaciones detalladas sobre cada clasificación",
+      feature3: "Sugerencias de Respuesta",
+      feature3Desc: "Obtén respuestas sugeridas basadas en el contenido del correo",
+      startButton: "Comenzar",
     },
     classifier: {
       input: {

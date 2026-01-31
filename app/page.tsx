@@ -3,6 +3,7 @@
 import { AppHeader } from "@/src/components/AppHeader";
 import { AppFooter } from "@/src/components/AppFooter";
 import { EmailClassifier } from "@/src/components/EmailClassifier";
+import { WelcomeModal } from "@/src/components/WelcomeModal";
 import React from "react";
 
 const DARK_BLUE = "#001020";
@@ -31,6 +32,7 @@ export default function Home(): React.ReactElement {
         `,
         pointerEvents: "none",
       }} />
+      <WelcomeModal />
       <AppHeader />
       <div style={{ 
         flex: 1,
