@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { 
   Input, Button, Segmented, Upload, Typography, 
-  Space, Tag, Empty, Spin, message
+  Space, Tag, Empty, Spin, message, Row, Col, Flex
 } from "antd";
 import type { UploadFile, UploadProps } from "antd";
 import { 
@@ -23,7 +23,37 @@ const { Dragger } = Upload;
 const DARK_BLUE = "#001020";
 const GOLD_ORANGE = "#E0A030";
 
+const LANGUAGE_MAP: Record<Email.Language, string> = {
+  pt: "pt-BR",
+  en: "en-US",
+  es: "es-ES",
+};
+
+const CARD_STYLE = {
+  borderRadius: 16,
+  border: "none",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+  background: "rgba(255, 255, 255, 0.95)",
+  height: "100%",
+};
+
+const TITLE_INDICATOR_STYLE = {
+  width: 4,
+  height: 20,
+  background: GOLD_ORANGE,
+  borderRadius: 2,
+};
+
 type InputMode = "text" | "file";
+
+const CardTitle = ({ children }: { children: React.ReactNode }) => (
+  <Space align="center" size={8}>
+    <div style={TITLE_INDICATOR_STYLE} />
+    <Text strong style={{ fontSize: 13, letterSpacing: "0.05em", color: DARK_BLUE }}>
+      {children}
+    </Text>
+  </Space>
+);
 
 export function EmailClassifier() {
   const { translations, language } = useTranslation();
@@ -39,17 +69,10 @@ export function EmailClassifier() {
 
     setIsLoading(true);
     try {
-      const file = fileList[0]?.originFileObj;
-      const languageMap: Record<Email.Language, string> = {
-        pt: "pt-BR",
-        en: "en-US",
-        es: "es-ES",
-      };
-      
       const response = await classifyEmail({
         content: emailContent || undefined,
-        file,
-        language: languageMap[language],
+        file: fileList[0]?.originFileObj,
+        language: LANGUAGE_MAP[language],
       });
 
       const data = 'classification' in response ? response.classification : response;
@@ -72,6 +95,7 @@ export function EmailClassifier() {
 
   const handleCopy = async () => {
     if (!currentEmail?.suggestion) return;
+
     await navigator.clipboard.writeText(currentEmail.suggestion);
     setCopied(true);
     message.success(translations.classifier.messages.copied);
@@ -102,31 +126,16 @@ export function EmailClassifier() {
       ? translations.classifier.result.productive 
       : translations.classifier.result.unproductive;
 
+  const categoryColor = currentEmail ? getCategoryColor(currentEmail.category) : "success";
+  const confidenceColor = categoryColor === "success" ? "#52c41a" : "#faad14";
+
   return (
-    <div style={{ display: "flex", gap: 32, flexDirection: "row", flexWrap: "wrap" }}>
-      <CardWrapper 
-        style={{ 
-          flex: "1 1 480px", 
-          borderRadius: 16, 
-          border: "none", 
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-          background: "rgba(255, 255, 255, 0.95)",
-        }}
-        title={
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ 
-              width: 4, 
-              height: 20, 
-              background: GOLD_ORANGE,
-              borderRadius: 2
-            }} />
-            <Text strong style={{ fontSize: 13, letterSpacing: "0.05em", color: DARK_BLUE }}>
-              {translations.classifier.input.title}
-            </Text>
-          </div>
-        }
-        extra={
-          (emailContent || fileList.length > 0) && (
+    <Row gutter={[32, 32]}>
+      <Col xs={24} sm={24} md={24} lg={12}>
+        <CardWrapper 
+          style={CARD_STYLE}
+          title={<CardTitle>{translations.classifier.input.title}</CardTitle>}
+          extra={(emailContent || fileList.length > 0) && (
             <Button 
               type="text" 
               danger 
@@ -136,236 +145,159 @@ export function EmailClassifier() {
             >
               {translations.classifier.input.clear}
             </Button>
-          )
-        }
-      >
-        <Space orientation="vertical" size="large" style={{ width: "100%" }}>
-          <Segmented
-            block
-            value={inputMode}
-            onChange={(value: string | number) => setInputMode(value as InputMode)}
-            options={[
-              { label: translations.classifier.input.textTab, value: "text", icon: <FontSizeOutlined /> },
-              { label: translations.classifier.input.fileTab, value: "file", icon: <FileTextOutlined /> },
-            ]}
-            style={{
-              borderRadius: 12,
-              padding: 4,
-              background: "#f5f5f5",
-            }}
-          />
-
-          {inputMode === "text" ? (
-            <TextArea
-              value={emailContent}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEmailContent(e.target.value)}
-              placeholder={translations.classifier.input.placeholder}
-              autoSize={{ minRows: 14, maxRows: 14 }}
-              style={{ 
-                borderRadius: 12, 
-                padding: 16, 
-                border: "1px solid #e0e0e0",
-                fontSize: 14,
-                lineHeight: 1.6,
-              }}
-            />
-          ) : (
-            <Dragger
-              maxCount={1}
-              fileList={fileList}
-              beforeUpload={handleBeforeUpload}
-              onRemove={() => setFileList([])}
-              style={{ 
-                borderRadius: 12, 
-                height: 280,
-                border: "2px dashed #d0d0d0",
-                backgroundColor: "#fafafa",
-              }}
-            >
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined style={{ color: GOLD_ORANGE, fontSize: 48 }} />
-              </p>
-              <p className="ant-upload-text" style={{ fontSize: 16, fontWeight: 500, color: DARK_BLUE }}>
-                {translations.classifier.input.dragText}
-              </p>
-              <p className="ant-upload-hint" style={{ fontSize: 13, color: "#666" }}>
-                {translations.classifier.input.dragHint}
-              </p>
-            </Dragger>
           )}
-
-          <Button
-            type="primary"
-            size="large"
-            block
-            icon={<SendOutlined />}
-            loading={isLoading}
-            disabled={!emailContent && fileList.length === 0}
-            onClick={handleClassify}
-            style={{ 
-              height: 56, 
-              borderRadius: 12, 
-              fontWeight: 600, 
-              fontSize: 16,
-              background: GOLD_ORANGE,
-              border: "none",
-              boxShadow: `0 8px 24px ${GOLD_ORANGE}40`,
-            }}
-          >
-            {isLoading ? (
-              <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <LoadingOutlined spin />
-                {translations.classifier.input.analyzing}
-              </span>
-            ) : (
-              translations.classifier.input.classifyButton
-            )}
-          </Button>
-        </Space>
-      </CardWrapper>
-
-      <CardWrapper 
-        style={{ 
-          flex: "1 1 480px", 
-          borderRadius: 16, 
-          border: "none", 
-          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-          background: "rgba(255, 255, 255, 0.95)",
-        }}
-        title={
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ 
-              width: 4, 
-              height: 20, 
-              background: GOLD_ORANGE,
-              borderRadius: 2
-            }} />
-            <Text strong style={{ fontSize: 13, letterSpacing: "0.05em", color: DARK_BLUE }}>
-              {translations.classifier.result.title}
-            </Text>
-          </div>
-        }
-      >
-        {isLoading ? (
-          <div style={{ padding: "100px 0", textAlign: "center" }}>
-            <Spin 
-              size="large" 
-              indicator={
-                <LoadingOutlined 
-                  style={{ fontSize: 48, color: GOLD_ORANGE }} 
-                  spin 
-                />
-              }
+        >
+          <Space orientation="vertical" size="large" style={{ width: "100%" }}>
+            <Segmented
+              block
+              value={inputMode}
+              onChange={(value) => setInputMode(value as InputMode)}
+              options={[
+                { label: translations.classifier.input.textTab, value: "text", icon: <FontSizeOutlined /> },
+                { label: translations.classifier.input.fileTab, value: "file", icon: <FileTextOutlined /> },
+              ]}
+              style={{ borderRadius: 12, padding: 4, background: "#f5f5f5" }}
             />
-            <div style={{ marginTop: 24 }}>
-              <Text style={{ 
-                fontSize: 15, 
-                fontWeight: 500,
-                display: "block",
-                marginBottom: 8,
-                color: DARK_BLUE,
-              }}>
-                {translations.classifier.result.loading}
-              </Text>
-              <Text style={{ fontSize: 13, color: "#666" }}>
-                {translations.classifier.result.loadingSubtext}
-              </Text>
-            </div>
-          </div>
-        ) : currentEmail ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-            <div style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              gap: 12,
-              padding: "16px 20px",
-              background: `linear-gradient(135deg, ${GOLD_ORANGE}15, ${GOLD_ORANGE}08)`,
-              borderRadius: 12,
-              border: `1px solid ${GOLD_ORANGE}30`,
-            }}>
-              <Tag 
-                color={getCategoryColor(currentEmail.category)}
+
+            {inputMode === "text" ? (
+              <TextArea
+                value={emailContent}
+                onChange={(e) => setEmailContent(e.target.value)}
+                placeholder={translations.classifier.input.placeholder}
+                autoSize={{ minRows: 14, maxRows: 14 }}
                 style={{ 
-                  borderRadius: 24, 
-                  padding: "6px 20px", 
-                  fontSize: 14, 
-                  fontWeight: 700, 
-                  border: "none",
+                  borderRadius: 12, 
+                  padding: 16, 
+                  border: "1px solid #e0e0e0",
+                  fontSize: 14,
+                  lineHeight: 1.6,
+                }}
+              />
+            ) : (
+              <Dragger
+                maxCount={1}
+                fileList={fileList}
+                beforeUpload={handleBeforeUpload}
+                onRemove={() => setFileList([])}
+                style={{ 
+                  borderRadius: 12, 
+                  height: 280,
+                  border: "2px dashed #d0d0d0",
+                  backgroundColor: "#fafafa",
                 }}
               >
-                {getCategoryLabel(currentEmail.category)}
-              </Tag>
-              <div style={{ 
-                display: "flex", 
-                alignItems: "center", 
-                gap: 6,
-                marginLeft: "auto",
-              }}>
-                <div style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  backgroundColor: getCategoryColor(currentEmail.category) === "success" ? "#52c41a" : "#faad14",
-                  boxShadow: `0 0 8px ${getCategoryColor(currentEmail.category) === "success" ? "#52c41a" : "#faad14"}`,
-                }} />
-                <Text style={{ fontSize: 13, fontWeight: 500, color: DARK_BLUE }}>
-                  {Math.round(currentEmail.confidence * 100)}% {translations.classifier.result.confidence}
-                </Text>
-              </div>
-            </div>
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined style={{ color: GOLD_ORANGE, fontSize: 48 }} />
+                </p>
+                <p className="ant-upload-text" style={{ fontSize: 16, fontWeight: 500, color: DARK_BLUE }}>
+                  {translations.classifier.input.dragText}
+                </p>
+                <p className="ant-upload-hint" style={{ fontSize: 13, color: "#666" }}>
+                  {translations.classifier.input.dragHint}
+                </p>
+              </Dragger>
+            )}
 
-            <div style={{
-              padding: 20,
-              background: "#f8f9fa",
-              borderRadius: 12,
-              border: "1px solid #e9ecef",
-            }}>
-              <Text 
-                strong 
-                style={{ 
-                  fontSize: 11, 
-                  textTransform: "uppercase",
-                  letterSpacing: "0.1em",
-                  display: "block",
-                  marginBottom: 12,
-                  color: DARK_BLUE,
-                }}
-              >
-                {translations.classifier.result.contextualAnalysis}
-              </Text>
-              <p style={{ 
-                margin: 0, 
-                color: DARK_BLUE, 
-                lineHeight: 1.8,
-                fontSize: 14,
-              }}>
-                {currentEmail.reasoning}
-              </p>
-            </div>
-
-            <div
-              style={{
-                backgroundColor: "#fff",
-                border: `2px solid ${GOLD_ORANGE}30`,
-                borderRadius: 12,
-                padding: 20,
-                position: "relative",
-                overflow: "hidden",
+            <Button
+              type="primary"
+              size="large"
+              block
+              icon={<SendOutlined />}
+              loading={isLoading}
+              disabled={!emailContent && fileList.length === 0}
+              onClick={handleClassify}
+              style={{ 
+                height: 56, 
+                borderRadius: 12, 
+                fontWeight: 600, 
+                fontSize: 16,
+                background: GOLD_ORANGE,
+                border: "none",
+                boxShadow: `0 8px 24px ${GOLD_ORANGE}40`,
               }}
             >
+              {isLoading ? (
+                <Space>
+                  <LoadingOutlined spin />
+                  {translations.classifier.input.analyzing}
+                </Space>
+              ) : (
+                translations.classifier.input.classifyButton
+              )}
+            </Button>
+          </Space>
+        </CardWrapper>
+      </Col>
+
+      <Col xs={24} sm={24} md={24} lg={12}>
+        <CardWrapper 
+          style={CARD_STYLE} 
+          title={<CardTitle>{translations.classifier.result.title}</CardTitle>}
+        >
+          {isLoading ? (
+            <Flex vertical align="center" justify="center" style={{ padding: "100px 0" }}>
+              <Spin 
+                size="large" 
+                indicator={<LoadingOutlined style={{ fontSize: 48, color: GOLD_ORANGE }} spin />} 
+              />
+              <Flex vertical align="center" style={{ marginTop: 24 }}>
+                <Text style={{ 
+                  fontSize: 15, 
+                  fontWeight: 500,
+                  display: "block",
+                  marginBottom: 8,
+                  color: DARK_BLUE,
+                }}>
+                  {translations.classifier.result.loading}
+                </Text>
+                <Text style={{ fontSize: 13, color: "#666" }}>
+                  {translations.classifier.result.loadingSubtext}
+                </Text>
+              </Flex>
+            </Flex>
+          ) : currentEmail ? (
+            <Flex vertical gap={28}>
+              <Flex 
+                align="center" 
+                gap={12}
+                style={{
+                  padding: "16px 20px",
+                  background: `linear-gradient(135deg, ${GOLD_ORANGE}15, ${GOLD_ORANGE}08)`,
+                  borderRadius: 12,
+                  border: `1px solid ${GOLD_ORANGE}30`,
+                }}
+              >
+                <Tag 
+                  color={categoryColor}
+                  style={{ 
+                    borderRadius: 24, 
+                    padding: "6px 20px", 
+                    fontSize: 14, 
+                    fontWeight: 700, 
+                    border: "none",
+                  }}
+                >
+                  {getCategoryLabel(currentEmail.category)}
+                </Tag>
+                <Flex align="center" gap={6} style={{ marginLeft: "auto" }}>
+                  <div style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    backgroundColor: confidenceColor,
+                    boxShadow: `0 0 8px ${confidenceColor}`,
+                  }} />
+                  <Text style={{ fontSize: 13, fontWeight: 500, color: DARK_BLUE }}>
+                    {Math.round(currentEmail.confidence * 100)}% {translations.classifier.result.confidence}
+                  </Text>
+                </Flex>
+              </Flex>
+
               <div style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: 3,
-                background: GOLD_ORANGE,
-              }} />
-              <div style={{ 
-                display: "flex", 
-                justifyContent: "space-between", 
-                alignItems: "center", 
-                marginBottom: 16 
+                padding: 20,
+                background: "#f8f9fa",
+                borderRadius: 12,
+                border: "1px solid #e9ecef",
               }}>
                 <Text 
                   strong 
@@ -373,55 +305,96 @@ export function EmailClassifier() {
                     fontSize: 11, 
                     textTransform: "uppercase",
                     letterSpacing: "0.1em",
+                    display: "block",
+                    marginBottom: 12,
                     color: DARK_BLUE,
                   }}
                 >
-                  {translations.classifier.result.suggestedResponse}
+                  {translations.classifier.result.contextualAnalysis}
                 </Text>
-                <Button 
-                  type="text" 
-                  size="small" 
-                  icon={copied ? <CheckOutlined /> : <CopyOutlined />} 
-                  onClick={handleCopy}
-                  style={{ 
-                    color: GOLD_ORANGE,
-                    borderRadius: 8,
-                    fontWeight: 500,
-                  }}
-                >
-                  {copied ? translations.classifier.result.copied : translations.classifier.result.copy}
-                </Button>
+                <p style={{ 
+                  margin: 0, 
+                  color: DARK_BLUE, 
+                  lineHeight: 1.8,
+                  fontSize: 14,
+                }}>
+                  {currentEmail.reasoning}
+                </p>
               </div>
-              <p style={{ 
-                margin: 0, 
-                whiteSpace: "pre-wrap", 
-                fontSize: 14, 
-                color: DARK_BLUE,
-                lineHeight: 1.8,
+
+              <div style={{
+                backgroundColor: "#fff",
+                border: `2px solid ${GOLD_ORANGE}30`,
+                borderRadius: 12,
+                padding: 20,
+                position: "relative",
+                overflow: "hidden",
               }}>
-                {currentEmail.suggestion}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div style={{ padding: "80px 0" }}>
-            <Empty 
-              description={
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 8, color: DARK_BLUE }}>
-                    {translations.classifier.result.waiting}
-                  </div>
-                  <div style={{ fontSize: 13, color: "#666" }}>
-                    {translations.classifier.result.waitingSubtext}
-                  </div>
-                </div>
-              } 
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              styles={{ image: { opacity: 0.5 } }}
-            />
-          </div>
-        )}
-      </CardWrapper>
-    </div>
+                <div style={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 3,
+                  background: GOLD_ORANGE,
+                }} />
+                <Flex justify="space-between" align="center" style={{ marginBottom: 16 }}>
+                  <Text 
+                    strong 
+                    style={{ 
+                      fontSize: 11, 
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      color: DARK_BLUE,
+                    }}
+                  >
+                    {translations.classifier.result.suggestedResponse}
+                  </Text>
+                  <Button 
+                    type="text" 
+                    size="small" 
+                    icon={copied ? <CheckOutlined /> : <CopyOutlined />} 
+                    onClick={handleCopy}
+                    style={{ 
+                      color: GOLD_ORANGE,
+                      borderRadius: 8,
+                      fontWeight: 500,
+                    }}
+                  >
+                    {copied ? translations.classifier.result.copied : translations.classifier.result.copy}
+                  </Button>
+                </Flex>
+                <p style={{ 
+                  margin: 0, 
+                  whiteSpace: "pre-wrap", 
+                  fontSize: 14, 
+                  color: DARK_BLUE,
+                  lineHeight: 1.8,
+                }}>
+                  {currentEmail.suggestion}
+                </p>
+              </div>
+            </Flex>
+          ) : (
+            <Flex vertical align="center" justify="center" style={{ padding: "80px 0" }}>
+              <Empty 
+                description={
+                  <Flex vertical align="center">
+                    <Text style={{ fontSize: 15, fontWeight: 500, marginBottom: 8, color: DARK_BLUE }}>
+                      {translations.classifier.result.waiting}
+                    </Text>
+                    <Text style={{ fontSize: 13, color: "#666" }}>
+                      {translations.classifier.result.waitingSubtext}
+                    </Text>
+                  </Flex>
+                } 
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                styles={{ image: { opacity: 0.5 } }}
+              />
+            </Flex>
+          )}
+        </CardWrapper>
+      </Col>
+    </Row>
   );
 }
