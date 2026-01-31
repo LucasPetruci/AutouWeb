@@ -1,8 +1,7 @@
 export const translations = {
   pt: {
     header: {
-      title: "AutoU",
-      subtitle: "Email Classifier",
+      title: "Email Classifier",
     },
     classifier: {
       input: {
@@ -38,8 +37,7 @@ export const translations = {
   },
   en: {
     header: {
-      title: "AutoU",
-      subtitle: "Email Classifier",
+      title: "Email Classifier",
     },
     classifier: {
       input: {
@@ -75,8 +73,7 @@ export const translations = {
   },
   es: {
     header: {
-      title: "AutoU",
-      subtitle: "Clasificador de Correos",
+      title: "Clasificador de Correos",
     },
     classifier: {
       input: {

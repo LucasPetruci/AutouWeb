@@ -1,7 +1,7 @@
 "use client";
 
 import { Layout, Button, Dropdown, Space, Typography, Row, Col } from 'antd';
-import { MailOutlined, GlobalOutlined, DownOutlined, ThunderboltOutlined } from '@ant-design/icons';
+import { MailOutlined, GlobalOutlined, DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useTranslation } from '../i18n/LanguageContext';
 import { Email } from '../types/Email';
@@ -79,12 +79,6 @@ export function AppHeader() {
               }}>
                 {translations.header.title}
               </Text>
-              <Space size={4} style={{ marginTop: 2 }}>
-                <ThunderboltOutlined style={{ fontSize: 10, color: GOLD_ORANGE }} />
-                <Text style={{ fontSize: 10, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.7)' }}>
-                  {translations.header.subtitle}
-                </Text>
-              </Space>
             </Col>
           </Space>
         </Col>

@@ -1,6 +1,7 @@
 "use client";
 
 import { AppHeader } from "@/src/components/AppHeader";
+import { AppFooter } from "@/src/components/AppFooter";
 import { EmailClassifier } from "@/src/components/EmailClassifier";
 import React from "react";
 
@@ -14,6 +15,8 @@ export default function Home(): React.ReactElement {
       background: DARK_BLUE,
       position: "relative",
       overflow: "hidden",
+      display: "flex",
+      flexDirection: "column",
     }}>
       <div style={{
         position: "absolute",
@@ -30,14 +33,21 @@ export default function Home(): React.ReactElement {
       }} />
       <AppHeader />
       <div style={{ 
-        padding: "48px 32px", 
+        flex: 1,
+        padding: "64px 32px", 
         maxWidth: 1400, 
         margin: "0 auto",
         position: "relative",
         zIndex: 1,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}>
-        <EmailClassifier />
+        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          <EmailClassifier />
+        </div>
       </div>
+      <AppFooter />
     </main>
   );
 }
