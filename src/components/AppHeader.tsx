@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Button, Dropdown, Space, Typography, Row, Col } from 'antd';
+import { Layout, Button, Dropdown, Space, Typography, Row, Col, Grid } from 'antd';
 import { MailOutlined, GlobalOutlined, DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { useTranslation } from '../i18n/LanguageContext';
@@ -20,6 +20,7 @@ const languageLabels = {
 
 export function AppHeader() {
   const { language, setLanguage, translations } = useTranslation();
+  const { xs, sm } = Grid.useBreakpoint();
 
   const items: MenuProps['items'] = [
     { key: 'pt', label: 'Português' },
@@ -31,25 +32,27 @@ export function AppHeader() {
     setLanguage(info.key as Email.Language);
   };
 
+  const isMobile = xs || sm;
+
   return (
     <Header style={{ 
       background: `linear-gradient(135deg, ${DARK_BLUE} 0%, #001830 100%)`,
       backdropFilter: 'blur(20px)',
-      padding: '0 48px',
+      padding: isMobile ? '0 16px' : '0 48px',
       position: 'sticky',
       top: 0,
       zIndex: 1000,
-      height: '80px',
+      height: isMobile ? '64px' : '80px',
       boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
       borderBottom: `1px solid rgba(224, 160, 48, 0.2)`,
     }}>
       <Row justify="space-between" align="middle" style={{ height: '100%' }}>
-        <Col>
-          <Space size={16}>
+        <Col flex="auto">
+          <Space size={isMobile ? 8 : 16} wrap>
             <div style={{ 
               background: GOLD_ORANGE,
-              width: 48, 
-              height: 48, 
+              width: isMobile ? 36 : 48, 
+              height: isMobile ? 36 : 48, 
               borderRadius: 12,
               display: 'flex',
               alignItems: 'center',
@@ -57,6 +60,7 @@ export function AppHeader() {
               boxShadow: `0 8px 24px ${GOLD_ORANGE}40`,
               position: 'relative',
               overflow: 'hidden',
+              flexShrink: 0,
             }}>
               <div style={{
                 position: 'absolute',
@@ -67,11 +71,17 @@ export function AppHeader() {
                 background: 'radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%)',
                 animation: 'pulse 3s ease-in-out infinite',
               }} />
-              <MailOutlined style={{ color: DARK_BLUE, fontSize: 22, position: 'relative', zIndex: 1, fontWeight: 'bold' }} />
+              <MailOutlined style={{ 
+                color: DARK_BLUE, 
+                fontSize: isMobile ? 18 : 22, 
+                position: 'relative', 
+                zIndex: 1, 
+                fontWeight: 'bold' 
+              }} />
             </div>
             <Col>
               <Text strong style={{ 
-                fontSize: 20, 
+                fontSize: isMobile ? 16 : 20, 
                 letterSpacing: '-0.02em',
                 color: GOLD_ORANGE,
                 display: 'block',
@@ -83,7 +93,7 @@ export function AppHeader() {
           </Space>
         </Col>
 
-        <Col>
+        <Col flex="none">
           <Dropdown 
             menu={{ items, onClick: handleMenuClick, selectedKeys: [language] }} 
             trigger={['click']}
@@ -93,16 +103,20 @@ export function AppHeader() {
               style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                height: 44,
+                height: isMobile ? 36 : 44,
                 borderRadius: 10,
-                padding: '0 16px',
+                padding: isMobile ? '0 12px' : '0 16px',
                 background: 'rgba(224, 160, 48, 0.1)',
                 border: `1px solid rgba(224, 160, 48, 0.3)`,
               }}
             >
-              <Space size={10}>
-                <GlobalOutlined style={{ color: GOLD_ORANGE, fontSize: 16 }} />
-                <Text style={{ fontWeight: 500, fontSize: 14, color: 'white' }}>{languageLabels[language]}</Text>
+              <Space size={isMobile ? 6 : 10}>
+                <GlobalOutlined style={{ color: GOLD_ORANGE, fontSize: isMobile ? 14 : 16 }} />
+                {!isMobile && (
+                  <Text style={{ fontWeight: 500, fontSize: isMobile ? 12 : 14, color: 'white' }}>
+                    {languageLabels[language]}
+                  </Text>
+                )}
                 <DownOutlined style={{ fontSize: 10, color: 'rgba(255, 255, 255, 0.6)' }} />
               </Space>
             </Button>
