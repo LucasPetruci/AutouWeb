@@ -14,6 +14,8 @@ export const translations = {
         dragHint: "Arquivos .txt suportados",
         classifyButton: "Classificar E-mail",
         analyzing: "Analisando com IA...",
+        exampleProductive: "Exemplo Produtivo",
+        exampleUnproductive: "Exemplo Improdutivo",
       },
       result: {
         title: "RESULTADO",
@@ -50,6 +52,8 @@ export const translations = {
         dragHint: ".txt files supported",
         classifyButton: "Classify Email",
         analyzing: "Analyzing with AI...",
+        exampleProductive: "Productive Example",
+        exampleUnproductive: "Unproductive Example",
       },
       result: {
         title: "RESULT",
@@ -86,6 +90,8 @@ export const translations = {
         dragHint: "Archivos .txt soportados",
         classifyButton: "Clasificar Correo",
         analyzing: "Analizando con IA...",
+        exampleProductive: "Ejemplo Productivo",
+        exampleUnproductive: "Ejemplo Improductivo",
       },
       result: {
         title: "RESULTADO",

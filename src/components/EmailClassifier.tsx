@@ -15,6 +15,7 @@ import { classifyEmail } from '../services/Email.service';
 import { Email } from '../types/Email';
 import { useTranslation } from "../i18n/LanguageContext";
 import { CardWrapper } from "./CardWrapper";
+import { ExampleButtons } from "./ExampleButtons";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -43,6 +44,22 @@ const TITLE_INDICATOR_STYLE = {
   background: GOLD_ORANGE,
   borderRadius: 2,
 };
+
+const PRODUCTIVE_EXAMPLES = [
+  "Olá,\n\nGostaria de agendar uma reunião para discutirmos o projeto que estamos desenvolvendo. Poderia disponibilizar alguns horários na próxima semana?\n\nAtenciosamente.",
+  "Prezado(a),\n\nSeguem os documentos solicitados para análise. Por favor, revise e me informe se há necessidade de algum ajuste.\n\nAguardando retorno.\n\nCordialmente.",
+  "Bom dia,\n\nConforme combinado, envio o relatório mensal com os resultados alcançados. Destaco os principais pontos:\n- Meta atingida: 95%\n- Crescimento: 12% em relação ao mês anterior\n\nEstou à disposição para esclarecimentos.\n\nAbraços.",
+  "Olá,\n\nGostaria de propor uma melhoria no processo atual que pode aumentar nossa eficiência em aproximadamente 20%. Podemos conversar sobre isso?\n\nObrigado.",
+];
+
+const UNPRODUCTIVE_EXAMPLES = [
+  "Oi!\n\nVocê viu aquele vídeo que eu mandei? É muito engraçado!\n\nManda aí o que você achou!\n\nValeu!",
+  "E aí, beleza?\n\nCara, que dia chato hoje, né? Não aguento mais essa rotina...\n\nVocê também tá assim?\n\nFalou!",
+  "Oi!\n\nSó queria compartilhar uma coisa aleatória que aconteceu hoje... estava indo trabalhar e vi um cachorro muito fofo na rua!\n\nEnfim, só isso mesmo hahaha\n\nTchau!",
+  "E aí pessoal!\n\nAlguém viu aquele meme que circulou no grupo? Muito bom mesmo!\n\nBora fazer um happy hour essa semana?",
+  "Oi!\n\nSó queria reclamar um pouco... que semana difícil! Não aguento mais essa correria.\n\nVocês também estão assim?\n\nDesabafo feito hahaha",
+  "Olá!\n\nVocê assistiu aquela série que eu recomendei? Está muito boa! Precisamos conversar sobre o final, não acredito no que aconteceu!\n\nMe avisa quando terminar!\n\nAbraços!",
+];
 
 type InputMode = "text" | "file";
 
@@ -126,6 +143,12 @@ export function EmailClassifier() {
       ? translations.classifier.result.productive 
       : translations.classifier.result.unproductive;
 
+  const handleLoadExample = (type: "productive" | "unproductive") => {
+    const examples = type === "productive" ? PRODUCTIVE_EXAMPLES : UNPRODUCTIVE_EXAMPLES;
+    const randomExample = examples[Math.floor(Math.random() * examples.length)];
+    setEmailContent(randomExample);
+  };
+
   const categoryColor = currentEmail ? getCategoryColor(currentEmail.category) : "success";
   const confidenceColor = categoryColor === "success" ? "#52c41a" : "#faad14";
 
@@ -160,19 +183,29 @@ export function EmailClassifier() {
             />
 
             {inputMode === "text" ? (
-              <TextArea
-                value={emailContent}
-                onChange={(e) => setEmailContent(e.target.value)}
-                placeholder={translations.classifier.input.placeholder}
-                autoSize={{ minRows: 14, maxRows: 14 }}
-                style={{ 
-                  borderRadius: 12, 
-                  padding: 16, 
-                  border: "1px solid #e0e0e0",
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                }}
-              />
+              <>
+                <ExampleButtons
+                  onLoadProductive={() => handleLoadExample("productive")}
+                  onLoadUnproductive={() => handleLoadExample("unproductive")}
+                  translations={{
+                    exampleProductive: (translations.classifier.input as any).exampleProductive || "Exemplo Produtivo",
+                    exampleUnproductive: (translations.classifier.input as any).exampleUnproductive || "Exemplo Improdutivo",
+                  }}
+                />
+                <TextArea
+                  value={emailContent}
+                  onChange={(e) => setEmailContent(e.target.value)}
+                  placeholder={translations.classifier.input.placeholder}
+                  autoSize={{ minRows: 14, maxRows: 14 }}
+                  style={{ 
+                    borderRadius: 12, 
+                    padding: 16, 
+                    border: "1px solid #e0e0e0",
+                    fontSize: 14,
+                    lineHeight: 1.6,
+                  }}
+                />
+              </>
             ) : (
               <Dragger
                 maxCount={1}
