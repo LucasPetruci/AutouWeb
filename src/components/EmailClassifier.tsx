@@ -212,6 +212,7 @@ export function EmailClassifier() {
                 fileList={fileList}
                 beforeUpload={handleBeforeUpload}
                 onRemove={() => setFileList([])}
+                accept=".txt,.pdf"
                 style={{ 
                   borderRadius: 12, 
                   height: 280,
