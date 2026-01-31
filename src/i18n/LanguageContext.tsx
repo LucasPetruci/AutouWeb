@@ -1,19 +1,19 @@
 "use client";
 
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Language } from "../types/Email";
+import { Email } from '../types/Email';
 import { translations } from "./translations";
 
 interface LanguageContextType {
-  language: Language;
-  setLanguage: (lang: Language) => void;
-  translations: typeof translations[Language];
+  language: Email.Language;
+  setLanguage: (lang: Email.Language) => void;
+  translations: typeof translations[Email.Language];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("pt");
+  const [language, setLanguage] = useState<Email.Language>("pt");
 
   const currentTranslations = translations[language];
 
